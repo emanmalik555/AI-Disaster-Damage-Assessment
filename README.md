@@ -2,59 +2,67 @@
 An offline AI-powered computer vision system for assessing building damage after natural disasters.
 # 🏚️ AI Disaster Damage Assessment
 
-An offline AI-powered computer vision system that analyzes images of buildings after natural disasters such as earthquakes and floods to classify the level of structural damage.
+**Building AI course project**
 
-## 📌 Overview
+## Summary
 
-After disasters, assessing building damage quickly is critical for rescue operations. This project uses deep learning to automatically classify building damage from images into different severity levels.
+AI Disaster Damage Assessment is an offline computer vision system that analyzes images of buildings affected by natural disasters such as earthquakes and floods. It classifies the level of structural damage to support faster emergency response and disaster recovery without relying on paid APIs or internet connectivity.
 
-## 🎯 Objectives
+## Background
 
-- Detect building damage from images
-- Classify damage severity
-- Assist emergency response teams
-- Work completely offline without paid AI APIs
+Natural disasters damage thousands of buildings every year, making manual damage assessment slow and difficult. This project aims to automate the initial assessment process using artificial intelligence.
 
-## ✨ Features
+Problems it solves:
+* Speeds up damage assessment
+* Reduces manual inspection effort
+* Helps prioritize rescue operations
+* Supports disaster management agencies
 
-- Image Upload
-- AI-Based Damage Classification
-- Damage Confidence Score
-- Risk Level Indicator
-- Emergency Recommendations
-- Offline Processing
+## How is it used?
 
-## 🛠️ Tech Stack
+Users upload an image of a building, and the AI model predicts the level of damage (No Damage, Minor Damage, Major Damage, or Destroyed). The system also provides a confidence score and a basic recommendation for emergency response.
 
-- Python
-- TensorFlow / Keras
-- OpenCV
-- Streamlit
-- NumPy
-- Matplotlib
+Target users:
+* Emergency responders
+* Disaster management authorities
+* NGOs
+* Researchers
 
-## 📂 Project Structure
+## Data Sources and AI Methods
 
-AI-Disaster-Damage-Assessment/
-│── dataset/
-│── models/
-│── app.py
-│── train.py
-│── predict.py
-│── requirements.txt
-│── README.md
+**Dataset:**
+* xBD Building Damage Assessment Dataset
+* Public disaster image datasets
 
-## 🚀 Future Improvements
+**AI Methods:**
+* Convolutional Neural Networks (CNN)
+* Image Classification
+* Computer Vision using OpenCV
 
-- Heatmap visualization (Grad-CAM)
-- Damage localization
-- Multi-disaster support
-- PDF damage assessment reports
-- Mobile application
+## Challenges
 
-## 👩‍💻 Author
+This project does not replace professional structural engineers and may be less accurate on poor-quality images or disaster types not included in the training dataset.
 
-Malik Eman Waheed
+## Future Improvements
+
+* Support satellite and drone imagery
+* Damage localization using Grad-CAM
+* Mobile application
+* Multi-disaster classification
+* PDF damage assessment reports
+
+## Technologies Used
+
+* Python
+* TensorFlow / Keras
+* OpenCV
+* Streamlit
+* NumPy
+* Matplotlib
+
+## Author
+
+**Malik Eman Waheed**
 
 Computer Science Student
 
