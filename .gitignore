@@ -1,0 +1,50 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Secrets / environment files (never commit credentials)
+.env
+.env.*
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Logs / temporary generated files
+*.log
+*.tmp
+
+# Data (keep the folder, ignore contents)
+data/*
+!data/.gitkeep
+
+# Docs (keep the folder, ignore contents)
+docs/*
+!docs/.gitkeep
+
+# Test screenshots (generated during browser testing; demo2_* fallback kept locally only)
+test_images/*.png
+
+# Backup files
+backups/
+
+# Evaluation output artifacts
+scripts/eval_output/
+scripts/__pycache__/

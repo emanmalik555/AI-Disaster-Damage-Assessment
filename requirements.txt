@@ -1,0 +1,8 @@
+fastapi==0.141.1
+uvicorn==0.52.4
+torch==2.7.0
+torchvision==0.22.0
+numpy==2.5.2
+pillow==12.3.0
+segmentation_models_pytorch==0.5.0
+python-multipart==0.0.32

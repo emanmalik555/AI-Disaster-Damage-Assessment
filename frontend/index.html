@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Disaster Damage AI</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #1a1a2e;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h1 span { color: #e94560; }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .feature-card {
+            text-align: center;
+            padding: 14px 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+        .feature-card .fc-icon { font-size: 1.5em; }
+        .feature-card .fc-title { font-weight: 700; font-size: 0.85em; color: #1a1a2e; margin: 6px 0 2px; }
+        .feature-card .fc-desc { font-size: 0.75em; color: #888; }
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .upload-box {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .upload-box:hover { border-color: #e94560; }
+        .upload-box h3 { margin-bottom: 10px; color: #1a1a2e; }
+        .upload-box input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #eee;
+        }
+        .analyze-btn {
+            width: 100%;
+            padding: 18px;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: 0.3s;
+        }
+        .analyze-btn:hover { background: #c0392b; transform: scale(1.02); }
+        .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: none;
+        }
+        .results h2 { color: #1a1a2e; margin-bottom: 15px; }
+        .class-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .class-row:last-child { border-bottom: none; }
+        .bar-container {
+            flex: 1;
+            height: 25px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1s ease;
+        }
+        .class-label { min-width: 80px; font-weight: 600; }
+        .class-percent { min-width: 70px; text-align: right; font-weight: 600; }
+        /* --- Overall Assessment Card --- */
+        .assessment-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+        .assessment-badge {
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .assessment-badge .badge-icon {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .assessment-badge .badge-level {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .stat-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #1a1a2e;
+        }
+        .stat-label {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 4px;
+        }
+        .stat-item.highlight {
+            background: #e94560;
+            color: white;
+        }
+        .stat-item.highlight .stat-value { color: white; }
+        .stat-item.highlight .stat-label { color: rgba(255,255,255,0.8); }
+        .explanation {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.6;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #e94560;
+        }
+        .damage-low { background: #d4edda; color: #155724; }
+        .damage-moderate { background: #fff3cd; color: #856404; }
+        .damage-severe { background: #f8d7da; color: #721c24; }
+        @media (max-width: 600px) {
+            .upload-grid { grid-template-columns: 1fr; }
+        }
+        .overlay-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .overlay-section h2 {
+            color: #1a1a2e;
+            margin-bottom: 15px;
+        }
+        .overlay-section canvas {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .comparison-section {
+            margin-top: 25px;
+        }
+        .comparison-section h2 {
+            color: #1a1a2e;
+            margin-bottom: 15px;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .comparison-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        .comparison-card h4 {
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        .comparison-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .btn-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .demo-btn {
+            display: block; width: 100%; padding: 12px; background: #3498db; color: white;
+            border: none; border-radius: 10px; font-size: 1em; font-weight: bold;
+            cursor: pointer; margin-top: 10px; transition: 0.3s;
+        }
+        .demo-btn:hover { background: #2980b9; }
+        .demo-info {
+            display: none; margin-top: 10px; padding: 15px; background: #eaf4fc;
+            border-radius: 10px; border-left: 4px solid #3498db; font-size: 0.9em; color: #2c3e50;
+        }
+        .demo-info strong { color: #1a1a2e; }
+        .demo-info code { background: #dde; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        .overlay-slider-wrap {
+            margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .overlay-slider-wrap input[type="range"] { width: 200px; cursor: pointer; }
+        .overlay-slider-wrap label { font-size: 0.9em; color: #555; font-weight: 600; white-space: nowrap; }
+        .overlay-desc { font-size: 0.85em; color: #888; margin-top: 10px; font-style: italic; }
+        .download-btn {
+            display: none; width: 100%; padding: 16px; background: #27ae60; color: white;
+            border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold;
+            cursor: pointer; margin-top: 20px; transition: 0.3s;
+        }
+        .download-btn:hover { background: #219a52; transform: scale(1.01); }
+        @media (max-width: 600px) {
+            .feature-cards { grid-template-columns: 1fr; }
+            .hiw-grid { grid-template-columns: 1fr; }
+        }
+        /* --- How It Works --- */
+        .how-it-works {
+            margin-top: 25px; margin-bottom: 25px; padding: 20px;
+            background: #f8f9fa; border-radius: 12px;
+        }
+        .how-it-works h2 { color: #1a1a2e; margin-bottom: 15px; text-align: center; }
+        .hiw-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+        }
+        .hiw-step {
+            text-align: center; padding: 14px 10px; background: white;
+            border-radius: 10px; border: 1px solid #eee;
+        }
+        .hiw-num {
+            display: inline-block; width: 28px; height: 28px; line-height: 28px;
+            background: #e94560; color: white; border-radius: 50%;
+            font-weight: bold; font-size: 0.85em; margin-bottom: 6px;
+        }
+        .hiw-title { font-weight: 700; font-size: 0.85em; color: #1a1a2e; margin-bottom: 3px; }
+        .hiw-desc { font-size: 0.75em; color: #888; line-height: 1.4; }
+        .disclaimer {
+            margin-top: 15px; padding: 12px 15px; background: #fff9e6;
+            border-radius: 10px; border-left: 4px solid #f1c40f;
+            font-size: 0.85em; color: #7d6608; line-height: 1.5;
+        }
+        /* --- Test Cases --- */
+        .test-cases {
+            margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+        .test-case-card {
+            background: #f0f8ff; border-radius: 12px; padding: 15px;
+            border: 2px solid #d0e8ff; text-align: center; cursor: pointer;
+            transition: 0.3s;
+        }
+        .test-case-card:hover { border-color: #3498db; background: #e6f2ff; }
+        .test-case-card .tc-icon { font-size: 1.5em; }
+        .test-case-card .tc-title { font-weight: 700; font-size: 0.9em; color: #1a1a2e; margin: 5px 0; }
+        .test-case-card .tc-desc { font-size: 0.8em; color: #555; line-height: 1.4; }
+        .test-case-card code {
+            background: #dde; padding: 2px 6px; border-radius: 4px;
+            font-size: 0.85em; display: inline-block; margin-top: 3px;
+        }
+        @media (max-width: 600px) { .test-cases { grid-template-columns: 1fr; } }
+        /* --- Quality Indicator --- */
+        .quality-bar-container {
+            width: 100%; height: 8px; background: #ecf0f1;
+            border-radius: 4px; margin-top: 6px; overflow: hidden;
+        }
+        .quality-bar-fill {
+            height: 100%; border-radius: 4px; transition: width 1s ease;
+        }
+        /* --- Inline Error --- */
+        .error-box {
+            padding: 15px; background: #fde8e8; border-radius: 10px;
+            border-left: 4px solid #e74c3c; color: #721c24;
+            line-height: 1.6;
+        }
+        .error-box code {
+            background: #eee; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.9em; display: inline-block; margin-top: 5px;
+        }
+        /* --- Demo Guide --- */
+        .demo-guide {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f0f7ff;
+            border: 1px solid #d0e8ff;
+            border-radius: 12px;
+        }
+        .demo-guide h2 { color: #1a1a2e; margin-bottom: 15px; text-align: center; }
+        .demo-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .demo-step {
+            background: white; border-radius: 10px; padding: 12px 10px;
+            text-align: center; border: 1px solid #e3eefc;
+        }
+        .demo-step .ds-num {
+            display: inline-block; width: 24px; height: 24px; line-height: 24px;
+            background: #3498db; color: white; border-radius: 50%;
+            font-weight: bold; font-size: 0.8em; margin-bottom: 6px;
+        }
+        .demo-step .ds-title { font-weight: 700; font-size: 0.85em; color: #1a1a2e; margin-bottom: 3px; }
+        .demo-step .ds-desc { font-size: 0.75em; color: #666; line-height: 1.4; }
+        .demo-note { text-align: center; font-size: 0.8em; color: #666; margin-top: 12px; }
+        @media (max-width: 600px) { .demo-steps { grid-template-columns: 1fr; } }
+        /* --- Analysis status --- */
+        .analysis-status {
+            display: none;
+            margin: 20px auto 0;
+            padding: 10px 22px;
+            width: fit-content;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+        /* --- Upload polish --- */
+        .upload-hint { font-size: 0.75em; color: #999; margin-top: 8px; }
+        .upload-box.highlight { border-color: #3498db; background: #eaf4fc; }
+        /* --- Site footer --- */
+        .site-footer {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #888;
+        }
+        .footer-brand { font-weight: 700; font-size: 1em; color: #1a1a2e; }
+        .footer-tagline { font-size: 0.85em; margin-top: 4px; }
+        .footer-event { font-size: 0.8em; font-weight: 600; color: #e94560; margin-top: 8px; }
+        .footer-disclaimer {
+            font-size: 0.75em; color: #999; line-height: 1.5;
+            max-width: 560px; margin: 10px auto 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 Disaster <span>Damage</span> AI</h1>
+        <p class="subtitle">AI-powered before-and-after disaster damage assessment</p>
+
+        <div class="feature-cards">
+            <div class="feature-card">
+                <div class="fc-icon">🖼️</div>
+                <div class="fc-title">Before &amp; After</div>
+                <div class="fc-desc">Compare disaster imagery</div>
+            </div>
+            <div class="feature-card">
+                <div class="fc-icon">🤖</div>
+                <div class="fc-title">AI Segmentation</div>
+                <div class="fc-desc">Pixel-level damage detection</div>
+            </div>
+            <div class="feature-card">
+                <div class="fc-icon">📊</div>
+                <div class="fc-title">Damage Analysis</div>
+                <div class="fc-desc">Quantified affected area</div>
+            </div>
+        </div>
+
+        <div class="how-it-works">
+            <h2>🔧 How It Works</h2>
+            <div class="hiw-grid">
+                <div class="hiw-step">
+                    <div class="hiw-num">1</div>
+                    <div class="hiw-title">Upload Images</div>
+                    <div class="hiw-desc">Provide before and after disaster photos</div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">2</div>
+                    <div class="hiw-title">AI Comparison</div>
+                    <div class="hiw-desc">The AI model compares both images side by side</div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">3</div>
+                    <div class="hiw-title">Pixel Segmentation</div>
+                    <div class="hiw-desc">Every pixel is classified into a damage category</div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">4</div>
+                    <div class="hiw-title">Damage Calculation</div>
+                    <div class="hiw-desc">Percentages are computed for each damage class</div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">5</div>
+                    <div class="hiw-title">Damage Map</div>
+                    <div class="hiw-desc">A color-coded overlay shows damage locations</div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">6</div>
+                    <div class="hiw-title">Download Report</div>
+                    <div class="hiw-desc">Save your analysis as an HTML report</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-grid">
+            <div class="upload-box">
+                <h3>📸 Before Disaster</h3>
+                <input type="file" id="beforeImage" accept="image/*">
+                <br>
+                <img id="beforePreview" class="preview-img" src="" alt="Before preview">
+                <div class="upload-hint">JPG, PNG or WEBP · max 10 MB</div>
+            </div>
+            <div class="upload-box">
+                <h3>📸 After Disaster</h3>
+                <input type="file" id="afterImage" accept="image/*">
+                <br>
+                <img id="afterPreview" class="preview-img" src="" alt="After preview">
+                <div class="upload-hint">JPG, PNG or WEBP · max 10 MB</div>
+            </div>
+        </div>
+
+        <div class="demo-guide">
+            <h2>🎬 Quick Demo Guide</h2>
+            <div class="demo-steps">
+                <div class="demo-step">
+                    <div class="ds-num">1</div>
+                    <div class="ds-title">Pick a Test Pair</div>
+                    <div class="ds-desc">Choose Test Case 1 or 2 below — sample images are in the <code>test_images</code> folder</div>
+                </div>
+                <div class="demo-step">
+                    <div class="ds-num">2</div>
+                    <div class="ds-title">Upload Both Images</div>
+                    <div class="ds-desc">Before image → left box · After image → right box</div>
+                </div>
+                <div class="demo-step">
+                    <div class="ds-num">3</div>
+                    <div class="ds-title">Analyze Damage</div>
+                    <div class="ds-desc">Review the assessment, damage overlay and comparison — then download the report</div>
+                </div>
+            </div>
+            <div class="test-cases">
+                <div class="test-case-card" id="testCase1">
+                    <div class="tc-icon">🏠</div>
+                    <div class="tc-title">Test Case 1</div>
+                    <div class="tc-desc">
+                        Before box: <code>before1.jpg</code><br>
+                        After box: <code>after1.jpg</code><br>
+                        Expected: Damage from the first disaster scenario
+                    </div>
+                </div>
+                <div class="test-case-card" id="testCase2">
+                    <div class="tc-icon">🌍</div>
+                    <div class="tc-title">Test Case 2</div>
+                    <div class="tc-desc">
+                        Before box: <code>before2.jpg</code><br>
+                        After box: <code>after2.jpg</code><br>
+                        Expected: Damage from the second disaster scenario
+                    </div>
+                </div>
+            </div>
+            <p class="demo-note">💡 Click a test case for step-by-step instructions — the full demo takes under a minute.</p>
+        </div>
+
+        <button class="analyze-btn" id="analyzeBtn">🔍 Analyze Damage</button>
+        <div id="analysisStatus" class="analysis-status">✓ Analysis Complete</div>
+
+        <div id="results" class="results">
+            <h2 id="overallHeading" style="display:none;">📋 Overall Assessment</h2>
+            <div id="overallBox" class="assessment-card" style="display:none;"></div>
+            <h2>📊 Class Distribution</h2>
+            <div id="classStats"></div>
+
+            <div id="overlaySection" class="overlay-section" style="display:none;">
+                <h2>🗺️ Damage Overlay</h2>
+                <p class="overlay-desc">Colored areas show where the AI detected different levels of damage.</p>
+                <canvas id="damageCanvas"></canvas>
+                <div class="overlay-slider-wrap">
+                    <label for="opacitySlider">Overlay Opacity: <span id="opacityValue">60</span>%</label>
+                    <input type="range" id="opacitySlider" min="0" max="100" value="60">
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-dot" style="background:#2ecc71;"></span> No Damage</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#f1c40f;"></span> Minor</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#e67e22;"></span> Moderate</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#e74c3c;"></span> Severe</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#8e44ad;"></span> Destruction</div>
+                </div>
+            </div>
+
+            <div id="comparisonSection" class="comparison-section" style="display:none;">
+                <h2>📸 Before vs After</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Before Disaster</h4>
+                        <img id="compBefore" src="" alt="Before Disaster">
+                    </div>
+                    <div class="comparison-card">
+                        <h4>After Disaster</h4>
+                        <img id="compAfter" src="" alt="After Disaster">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="download-btn" id="downloadBtn" type="button">📥 Download Analysis Report</button>
+
+        <div class="disclaimer">
+            ⚠️ <strong>AI-Assisted Assessment:</strong> This tool provides AI-assisted visual damage assessment for rapid analysis, demonstration and decision support. Results are based on pixel-level image segmentation and may not reflect real-world conditions. They should not replace professional disaster or structural inspection — always verify findings with qualified experts.
+        </div>
+
+        <div class="site-footer">
+            <div class="footer-brand">🌊 Disaster Damage AI</div>
+            <div class="footer-tagline">AI-assisted disaster damage assessment</div>
+            <div class="footer-event">Alibaba Cloud AI Hackathon — Pakistan 2026</div>
+            <div class="footer-disclaimer">Results are AI-generated and intended for demonstration and decision support only. They do not replace professional disaster inspection or structural assessment.</div>
+        </div>
+    </div>
+
+    <script>
+        // Preview images
+        document.getElementById('beforeImage').onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = (ev) => document.getElementById('beforePreview').src = ev.target.result;
+            reader.readAsDataURL(e.target.files[0]);
+        };
+        document.getElementById('afterImage').onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = (ev) => document.getElementById('afterPreview').src = ev.target.result;
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        const classColors = {
+            'class_0': '#2ecc71',  // Green - No damage
+            'class_1': '#f1c40f',  // Yellow - Minor
+            'class_2': '#e67e22',  // Orange - Moderate
+            'class_3': '#e74c3c',  // Red - Severe
+            'class_4': '#8e44ad'   // Purple - Destruction
+        };
+
+        const classLabels = {
+            'class_0': 'No Damage',
+            'class_1': 'Minor Damage',
+            'class_2': 'Moderate Damage',
+            'class_3': 'Severe Damage',
+            'class_4': 'Complete Destruction'
+        };
+
+        // --- Global state for overlay redraw and report ---
+        window.currentAfterImg = null;
+        window.currentMaskImg = null;
+        window.lastAnalysisData = null;
+
+        function drawOverlay(opacity) {
+            var canvas = document.getElementById('damageCanvas');
+            var ctx = canvas.getContext('2d');
+            if (!window.currentAfterImg || !window.currentMaskImg) return;
+            canvas.width = window.currentAfterImg.width;
+            canvas.height = window.currentAfterImg.height;
+            ctx.globalAlpha = 1;
+            ctx.drawImage(window.currentAfterImg, 0, 0);
+            ctx.globalAlpha = opacity / 100;
+            ctx.drawImage(window.currentMaskImg, 0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1;
+        }
+
+        // Opacity slider handler
+        document.getElementById('opacitySlider').oninput = function() {
+            document.getElementById('opacityValue').textContent = this.value;
+            drawOverlay(parseInt(this.value));
+        };
+
+        // Centralized error display — resets result widgets so the error state stays clean
+        function showError(errorHtml) {
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('overallHeading').style.display = 'none';
+            document.getElementById('overallBox').style.display = 'none';
+            document.getElementById('overallBox').innerHTML = '';
+            document.getElementById('overlaySection').style.display = 'none';
+            document.getElementById('comparisonSection').style.display = 'none';
+            document.getElementById('downloadBtn').style.display = 'none';
+            document.getElementById('analysisStatus').style.display = 'none';
+            document.getElementById('classStats').innerHTML = '<div class="error-box">' + errorHtml + '</div>';
+        }
+
+        // Test case buttons — guided demo instructions (no automatic file loading)
+        function highlightUploadBoxes() {
+            document.querySelector('.upload-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.querySelectorAll('.upload-box').forEach(function(box) {
+                box.classList.add('highlight');
+                setTimeout(function() { box.classList.remove('highlight'); }, 1600);
+            });
+        }
+        document.getElementById('testCase1').onclick = function() {
+            highlightUploadBoxes();
+            alert('🏠 Test Case 1 — Demo Steps:\n\n1. "Before Disaster" box (left) → select: test_images/before1.jpg\n2. "After Disaster" box (right) → select: test_images/after1.jpg\n3. Click "Analyze Damage"\n\nThen explore: Overall Assessment → Damage Overlay (try the opacity slider) → Before vs After → Download Analysis Report.');
+        };
+        document.getElementById('testCase2').onclick = function() {
+            highlightUploadBoxes();
+            alert('🌍 Test Case 2 — Demo Steps:\n\n1. "Before Disaster" box (left) → select: test_images/before2.jpg\n2. "After Disaster" box (right) → select: test_images/after2.jpg\n3. Click "Analyze Damage"\n\nThen explore: Overall Assessment → Damage Overlay (try the opacity slider) → Before vs After → Download Analysis Report.');
+        };
+
+        // Download report handler — builds a self-contained, offline-compatible HTML report
+        document.getElementById('downloadBtn').onclick = function() {
+            if (!window.lastAnalysisData) return;
+            var d = window.lastAnalysisData;
+            var beforeSrc = document.getElementById('beforePreview').src || '';
+            var afterSrc = document.getElementById('afterPreview').src || '';
+            var qScore = d.predictionQuality || 0;
+
+            // Class distribution rows with colored share bars
+            var classOrder = ['class_0','class_1','class_2','class_3','class_4'];
+            var rows = '';
+            for (var ci = 0; ci < classOrder.length; ci++) {
+                var key = classOrder[ci];
+                var cd = d.classes[key] || {percentage: 0, pixels: 0};
+                rows += '<tr>' +
+                    '<td><span class="dot" style="background:' + classColors[key] + '"></span>' + classLabels[key] + '</td>' +
+                    '<td><div class="bar"><div class="bar-fill" style="width:' + Math.min(cd.percentage, 100) + '%; background:' + classColors[key] + ';"></div></div></td>' +
+                    '<td class="num">' + cd.percentage.toFixed(1) + '%</td>' +
+                    '<td class="num">' + cd.pixels.toLocaleString() + '</td>' +
+                    '</tr>';
+            }
+
+            // Assessment badge colors by damage level
+            var levelBg, levelFg;
+            if (d.level === 'LOW DAMAGE') { levelBg = '#d4edda'; levelFg = '#155724'; }
+            else if (d.level === 'MODERATE DAMAGE') { levelBg = '#fff3cd'; levelFg = '#856404'; }
+            else { levelBg = '#f8d7da'; levelFg = '#721c24'; }
+
+            var qualityColor = qScore >= 70 ? '#27ae60' : qScore >= 40 ? '#f39c12' : '#e74c3c';
+            var dominantColor = d.dominantColor || '#e94560';
+
+            var overlayBlock = d.overlayImage
+                ? '<div class="card"><h2>🗺️ Damage Overlay</h2>' +
+                  '<img class="overlay-img" src="' + d.overlayImage + '" alt="Damage Overlay">' +
+                  '<div class="legend"><span class="dot" style="background:#2ecc71"></span>No Damage&nbsp;&nbsp;<span class="dot" style="background:#f1c40f"></span>Minor&nbsp;&nbsp;<span class="dot" style="background:#e67e22"></span>Moderate&nbsp;&nbsp;<span class="dot" style="background:#e74c3c"></span>Severe&nbsp;&nbsp;<span class="dot" style="background:#8e44ad"></span>Destruction</div></div>'
+                : '';
+
+            var reportHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+                '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+                '<title>Disaster Damage AI — Analysis Report</title><style>' +
+                'body{font-family:"Segoe UI",Arial,sans-serif;margin:0;padding:0;background:#f0f2f5;color:#333;line-height:1.6}' +
+                '.page{max-width:860px;margin:0 auto;padding:24px}' +
+                '.report-header{background:#1a1a2e;color:#fff;border-radius:14px;padding:28px;text-align:center}' +
+                '.report-header h1{margin:0;font-size:1.8em}' +
+                '.report-header h1 span{color:#e94560}' +
+                '.rh-sub{color:#cfd8e3;margin-top:6px;font-size:0.95em}' +
+                '.rh-event{display:inline-block;margin-top:12px;padding:5px 14px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:30px;font-size:0.8em;letter-spacing:0.5px}' +
+                '.rh-time{color:#9fb0c3;font-size:0.8em;margin-top:10px}' +
+                '.card{background:#fff;border-radius:14px;padding:24px;margin-top:20px;border:1px solid #e8e8e8}' +
+                'h2{color:#1a1a2e;font-size:1.1em;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid #eef0f4}' +
+                '.level-badge{text-align:center;padding:14px;border-radius:12px;font-size:1.25em;font-weight:bold;margin-bottom:16px}' +
+                '.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}' +
+                '.stat{background:#f8f9fa;border-radius:10px;padding:12px;text-align:center}' +
+                '.stat.hl{background:#e94560;color:#fff}' +
+                '.stat.hl .sv{color:#fff}' +
+                '.stat.hl .sl{color:rgba(255,255,255,0.85)}' +
+                '.sv{font-size:1.35em;font-weight:bold;color:#1a1a2e}' +
+                '.sl{font-size:0.75em;color:#888;margin-top:3px}' +
+                'table{width:100%;border-collapse:collapse}' +
+                'th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f0f0;font-size:0.9em}' +
+                'th{color:#1a1a2e;background:#f8f9fa}' +
+                'td.num{text-align:right;white-space:nowrap}' +
+                '.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}' +
+                '.bar{background:#ecf0f1;border-radius:8px;height:14px;min-width:90px;overflow:hidden}' +
+                '.bar-fill{height:100%;border-radius:8px}' +
+                '.qbar{background:#ecf0f1;border-radius:6px;height:10px;overflow:hidden;margin-top:8px}' +
+                '.qbar-fill{height:100%}' +
+                '.images{display:grid;grid-template-columns:1fr 1fr;gap:14px}' +
+                '.img-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:10px;text-align:center}' +
+                '.img-card img{width:100%;border-radius:8px;border:1px solid #eee}' +
+                '.img-label{font-weight:600;font-size:0.85em;color:#1a1a2e;margin-top:8px}' +
+                '.overlay-img{width:100%;border-radius:8px;border:1px solid #eee}' +
+                '.legend{margin-top:10px;font-size:0.78em;color:#666;text-align:center}' +
+                '.explanation{background:#f8f9fa;padding:14px 16px;border-radius:10px;border-left:4px solid #e94560;font-size:0.92em;color:#444}' +
+                '.disclaimer{background:#fff9e6;border-left:4px solid #f1c40f;padding:14px 16px;border-radius:10px;font-size:0.85em;color:#7d6608;margin-top:20px}' +
+                '.report-footer{text-align:center;color:#999;font-size:0.8em;margin-top:24px;padding:16px 0 6px;border-top:1px solid #e5e5e5}' +
+                '@media(max-width:600px){.images{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr}}' +
+                '</style></head><body><div class="page">' +
+                '<div class="report-header">' +
+                '<h1>🌊 Disaster <span>Damage</span> AI</h1>' +
+                '<div class="rh-sub">AI-Assisted Disaster Damage Assessment Report</div>' +
+                '<div class="rh-event">Alibaba Cloud AI Hackathon — Pakistan 2026</div>' +
+                '<div class="rh-time">Report generated: ' + new Date().toLocaleString() + '</div>' +
+                '</div>' +
+                '<div class="card"><h2>📋 Overall Assessment</h2>' +
+                '<div class="level-badge" style="background:' + levelBg + ';color:' + levelFg + ';">' + d.level + '</div>' +
+                '<div class="stats-grid">' +
+                '<div class="stat hl"><div class="sv">' + d.affectedArea.toFixed(1) + '%</div><div class="sl">Total Affected Area</div></div>' +
+                '<div class="stat"><div class="sv">' + d.unaffectedArea.toFixed(1) + '%</div><div class="sl">Unaffected Area</div></div>' +
+                '<div class="stat"><div class="sv" style="color:' + dominantColor + ';">' + d.dominantLabel + '</div><div class="sl">Dominant Damage Class (' + d.dominantPct.toFixed(1) + '%)</div></div>' +
+                '<div class="stat"><div class="sv">' + d.damageClassesPresent + ' of 4</div><div class="sl">Damage Types Detected</div></div>' +
+                '</div>' +
+                '<div class="stat" style="margin-top:10px;">' +
+                '<div class="sv" style="color:' + qualityColor + ';">' + qScore + '%</div>' +
+                '<div class="sl">Prediction Quality (softmax confidence)</div>' +
+                '<div class="qbar"><div class="qbar-fill" style="width:' + qScore + '%;background:' + qualityColor + ';"></div></div>' +
+                '</div></div>' +
+                '<div class="card"><h2>📸 Images</h2><div class="images">' +
+                (beforeSrc ? '<div class="img-card"><img src="' + beforeSrc + '" alt="Before Disaster"><div class="img-label">Before Disaster</div></div>' : '') +
+                (afterSrc ? '<div class="img-card"><img src="' + afterSrc + '" alt="After Disaster"><div class="img-label">After Disaster</div></div>' : '') +
+                '</div></div>' +
+                overlayBlock +
+                '<div class="card"><h2>📊 Class Distribution</h2>' +
+                '<table><thead><tr><th>Class</th><th>Share</th><th style="text-align:right">Percentage</th><th style="text-align:right">Pixels</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+                '<div class="card"><h2>🧾 Result Explanation</h2><div class="explanation">' + d.explanation + '</div></div>' +
+                '<div class="disclaimer">⚠️ <strong>AI-Assisted Assessment:</strong> This analysis was generated by an AI model using pixel-level image segmentation of the uploaded before/after images. It is intended for demonstration and decision support only and does not replace professional disaster or structural inspection. Results may not reflect real-world conditions — always verify findings with qualified experts.</div>' +
+                '<div class="report-footer">Generated by Disaster Damage AI — Alibaba Cloud AI Hackathon Pakistan 2026<br>AI-assisted disaster damage assessment · For demonstration and decision support only</div>' +
+                '</div></body></html>';
+            var blob = new Blob([reportHtml], {type: 'text/html'});
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'disaster_damage_analysis_report.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        document.getElementById('analyzeBtn').onclick = async function() {
+            const beforeFile = document.getElementById('beforeImage').files[0];
+            const afterFile = document.getElementById('afterImage').files[0];
+
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+            if (!beforeFile && !afterFile) {
+                showError('<strong>❌ Missing Images</strong><br>Please upload BOTH a before-disaster and an after-disaster image before clicking Analyze.');
+                return;
+            }
+            if (!beforeFile) {
+                showError('<strong>❌ Missing Before Image</strong><br>Please upload a before-disaster image (left upload box).');
+                return;
+            }
+            if (!afterFile) {
+                showError('<strong>❌ Missing After Image</strong><br>Please upload an after-disaster image (right upload box).');
+                return;
+            }
+            if (!validTypes.includes(beforeFile.type)) {
+                showError('<strong>❌ Unsupported File Type (Before)</strong><br>The before-disaster image is not a supported format. Please upload a JPG, JPEG, PNG, or WEBP file.');
+                return;
+            }
+            if (!validTypes.includes(afterFile.type)) {
+                showError('<strong>❌ Unsupported File Type (After)</strong><br>The after-disaster image is not a supported format. Please upload a JPG, JPEG, PNG, or WEBP file.');
+                return;
+            }
+            if (beforeFile.size === 0 || afterFile.size === 0) {
+                showError('<strong>❌ Empty File</strong><br>One or both uploaded files are empty (0 bytes). Please select valid image files.');
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btn-spinner"></span> Analyzing Damage...';
+            document.getElementById('analysisStatus').style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('before', beforeFile);
+            formData.append('after', afterFile);
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    // Try to extract the detail message from the API error response
+                    var apiDetail = '';
+                    try {
+                        var errJson = await response.json();
+                        apiDetail = errJson.detail || '';
+                    } catch (e) { /* response body is not JSON */ }
+                    var err = new Error('Server error: ' + response.status);
+                    err.apiDetail = apiDetail;
+                    err.status = response.status;
+                    throw err;
+                }
+                const data = await response.json();
+
+                // Show results
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('overallHeading').style.display = 'block';
+                document.getElementById('overallBox').style.display = 'block';
+
+                // Build class stats
+                let html = '';
+                let maxPercent = 0;
+                let maxClass = '';
+                for (const [key, val] of Object.entries(data.classes)) {
+                    const pct = val.percentage;
+                    if (pct > maxPercent) { maxPercent = pct; maxClass = key; }
+                    const color = classColors[key] || '#95a5a6';
+                    const label = classLabels[key] || key;
+                    html += `
+                        <div class="class-row">
+                            <span class="class-label" style="color:${color}">● ${label}</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width:${pct}%; background:${color};"></div>
+                            </div>
+                            <span class="class-percent">${pct.toFixed(1)}% (${val.pixels} px)</span>
+                        </div>
+                    `;
+                }
+                document.getElementById('classStats').innerHTML = html;
+
+                // Overall assessment
+                const class0pct = data.classes.class_0 ? data.classes.class_0.percentage : 0;
+                const affectedArea = Math.round((100 - class0pct) * 100) / 100;
+                const unaffectedArea = Math.round(class0pct * 100) / 100;
+
+                // Find dominant DAMAGE class (highest among class_1 to class_4)
+                let dominantDamageClass = 'class_1';
+                let dominantDamagePct = 0;
+                for (let i = 1; i <= 4; i++) {
+                    const key = 'class_' + i;
+                    if (data.classes[key] && data.classes[key].percentage > dominantDamagePct) {
+                        dominantDamagePct = data.classes[key].percentage;
+                        dominantDamageClass = key;
+                    }
+                }
+
+                // Count how many damage classes have pixels
+                let damageClassesPresent = 0;
+                for (let i = 1; i <= 4; i++) {
+                    if (data.classes['class_' + i] && data.classes['class_' + i].percentage > 0) damageClassesPresent++;
+                }
+
+                // Prediction quality
+                var qualityScore = data.prediction_quality || 0;
+                var qualityColor = qualityScore >= 70 ? '#27ae60' : qualityScore >= 40 ? '#f39c12' : '#e74c3c';
+
+                // Determine overall damage level from affected area
+                let level, levelIcon, levelColor, explanation;
+                if (affectedArea < 5) {
+                    level = 'LOW DAMAGE'; levelIcon = '✅'; levelColor = 'damage-low';
+                    explanation = 'The analyzed area is mostly unaffected. ' + unaffectedArea.toFixed(1) + '% of the area shows no damage. Only ' + affectedArea.toFixed(1) + '% shows signs of impact.';
+                } else if (affectedArea < 30) {
+                    level = 'MODERATE DAMAGE'; levelIcon = '⚠️'; levelColor = 'damage-moderate';
+                    explanation = 'A significant portion of the area is affected (' + affectedArea.toFixed(1) + '%). The most common damage type is ' + classLabels[dominantDamageClass] + '. Assessment and response planning are recommended.';
+                } else {
+                    level = 'SEVERE DAMAGE'; levelIcon = '🚨'; levelColor = 'damage-severe';
+                    explanation = 'Major destruction detected. ' + affectedArea.toFixed(1) + '% of the area is damaged, with ' + classLabels[dominantDamageClass] + ' as the primary damage type. Immediate response is advised.';
+                }
+
+                document.getElementById('overallBox').innerHTML =
+                    '<div class="assessment-badge ' + levelColor + '">' +
+                        '<span class="badge-icon">' + levelIcon + '</span>' +
+                        '<span class="badge-level">' + level + '</span>' +
+                    '</div>' +
+                    '<div class="stats-grid">' +
+                        '<div class="stat-item highlight">' +
+                            '<div class="stat-value">' + affectedArea.toFixed(1) + '%</div>' +
+                            '<div class="stat-label">Total Affected Area</div>' +
+                        '</div>' +
+                        '<div class="stat-item">' +
+                            '<div class="stat-value">' + unaffectedArea.toFixed(1) + '%</div>' +
+                            '<div class="stat-label">Unaffected Area</div>' +
+                        '</div>' +
+                        '<div class="stat-item">' +
+                            '<div class="stat-value" style="color:' + classColors[dominantDamageClass] + '">' + classLabels[dominantDamageClass] + '</div>' +
+                            '<div class="stat-label">Dominant Damage (' + dominantDamagePct.toFixed(1) + '%)</div>' +
+                        '</div>' +
+                        '<div class="stat-item">' +
+                            '<div class="stat-value">' + damageClassesPresent + ' of 4</div>' +
+                            '<div class="stat-label">Damage Types Detected</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="stat-item" style="margin-bottom:15px;">' +
+                        '<div class="stat-value" style="color:' + qualityColor + '">' + qualityScore + '%</div>' +
+                        '<div class="stat-label">Prediction Quality (softmax confidence)</div>' +
+                        '<div class="quality-bar-container"><div class="quality-bar-fill" style="width:' + qualityScore + '%;background:' + qualityColor + ';"></div></div>' +
+                    '</div>' +
+                    '<div class="explanation">' + explanation + '</div>';
+
+                // Store data for download report
+                window.lastAnalysisData = {
+                    level: level, affectedArea: affectedArea, unaffectedArea: unaffectedArea,
+                    dominantLabel: classLabels[dominantDamageClass], dominantPct: dominantDamagePct,
+                    dominantColor: classColors[dominantDamageClass],
+                    damageClassesPresent: damageClassesPresent, explanation: explanation,
+                    classes: data.classes, predictionQuality: qualityScore
+                };
+
+                // --- Damage overlay visualization ---
+                var afterImgForOverlay = new Image();
+                afterImgForOverlay.onload = function() {
+                    window.currentAfterImg = afterImgForOverlay;
+                    var canvas = document.getElementById('damageCanvas');
+                    canvas.width = afterImgForOverlay.width;
+                    canvas.height = afterImgForOverlay.height;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(afterImgForOverlay, 0, 0);
+                    var maskImg = new Image();
+                    maskImg.onload = function() {
+                        window.currentMaskImg = maskImg;
+                        drawOverlay(parseInt(document.getElementById('opacitySlider').value));
+                        window.lastAnalysisData.overlayImage = canvas.toDataURL('image/png');
+                    };
+                    maskImg.src = 'data:image/png;base64,' + data.damage_mask;
+                    document.getElementById('overlaySection').style.display = 'block';
+                };
+                afterImgForOverlay.src = document.getElementById('afterPreview').src;
+
+                // --- Before vs After comparison ---
+                document.getElementById('compBefore').src = document.getElementById('beforePreview').src;
+                document.getElementById('compAfter').src = document.getElementById('afterPreview').src;
+                document.getElementById('comparisonSection').style.display = 'block';
+                document.getElementById('downloadBtn').style.display = 'block';
+                document.getElementById('analysisStatus').style.display = 'block';
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (error) {
+                var errorMsg = error.message || 'An unknown error occurred';
+                var errorDetail = '';
+                var apiDetail = error.apiDetail || '';
+                var status = error.status || 0;
+
+                if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
+                    errorMsg = '❌ Backend Unavailable';
+                    errorDetail = 'Cannot connect to the AI backend. Please make sure the server is running:<br><code>python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000</code>';
+                } else if (status === 400 || errorMsg.includes('400')) {
+                    errorMsg = '❌ Invalid Image';
+                    errorDetail = apiDetail || 'The uploaded file could not be processed. Please upload a valid JPG, PNG, or WEBP image.';
+                } else if (status >= 500 || errorMsg.includes('500') || errorMsg.includes('Server error')) {
+                    errorMsg = '❌ Server Error';
+                    errorDetail = apiDetail || 'The AI model encountered an error during analysis. Please try different images or restart the backend.';
+                } else {
+                    errorMsg = '❌ Unexpected Error';
+                    errorDetail = apiDetail || errorMsg;
+                    errorDetail += '<br><br>If the problem persists, check that the backend is running:<br><code>python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000</code>';
+                }
+                showError('<strong>' + errorMsg + '</strong><br>' + errorDetail);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔍 Analyze Damage';
+            }
+        };
+    </script>
+</body>
+</html>
