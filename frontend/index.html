@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Disaster Damage AI</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -418,29 +419,29 @@
 </head>
 <body>
     <div class="container">
-        <h1>🌊 Disaster <span>Damage</span> AI</h1>
+        <h1>&#x1F30A; Disaster <span>Damage</span> AI</h1>
         <p class="subtitle">AI-powered before-and-after disaster damage assessment</p>
 
         <div class="feature-cards">
             <div class="feature-card">
-                <div class="fc-icon">🖼️</div>
+                <div class="fc-icon">&#x1F5BC;</div>
                 <div class="fc-title">Before &amp; After</div>
                 <div class="fc-desc">Compare disaster imagery</div>
             </div>
             <div class="feature-card">
-                <div class="fc-icon">🤖</div>
+                <div class="fc-icon">&#x1F916;</div>
                 <div class="fc-title">AI Segmentation</div>
                 <div class="fc-desc">Pixel-level damage detection</div>
             </div>
             <div class="feature-card">
-                <div class="fc-icon">📊</div>
+                <div class="fc-icon">&#x1F4CA;</div>
                 <div class="fc-title">Damage Analysis</div>
                 <div class="fc-desc">Quantified affected area</div>
             </div>
         </div>
 
         <div class="how-it-works">
-            <h2>🔧 How It Works</h2>
+            <h2>&#x1F527; How It Works</h2>
             <div class="hiw-grid">
                 <div class="hiw-step">
                     <div class="hiw-num">1</div>
@@ -477,43 +478,43 @@
 
         <div class="upload-grid">
             <div class="upload-box">
-                <h3>📸 Before Disaster</h3>
+                <h3>&#x1F4F8; Before Disaster</h3>
                 <input type="file" id="beforeImage" accept="image/*">
                 <br>
                 <img id="beforePreview" class="preview-img" src="" alt="Before preview">
-                <div class="upload-hint">JPG, PNG or WEBP · max 10 MB</div>
+                <div class="upload-hint">JPG, PNG or WEBP &#xB7; max 10 MB</div>
             </div>
             <div class="upload-box">
-                <h3>📸 After Disaster</h3>
+                <h3>&#x1F4F8; After Disaster</h3>
                 <input type="file" id="afterImage" accept="image/*">
                 <br>
                 <img id="afterPreview" class="preview-img" src="" alt="After preview">
-                <div class="upload-hint">JPG, PNG or WEBP · max 10 MB</div>
+                <div class="upload-hint">JPG, PNG or WEBP &#xB7; max 10 MB</div>
             </div>
         </div>
 
         <div class="demo-guide">
-            <h2>🎬 Quick Demo Guide</h2>
+            <h2>&#x1F3AC; Quick Demo Guide</h2>
             <div class="demo-steps">
                 <div class="demo-step">
                     <div class="ds-num">1</div>
                     <div class="ds-title">Pick a Test Pair</div>
-                    <div class="ds-desc">Choose Test Case 1 or 2 below — sample images are in the <code>test_images</code> folder</div>
+                    <div class="ds-desc">Choose Test Case 1 or 2 below &#x2014; sample images are in the <code>test_images</code> folder</div>
                 </div>
                 <div class="demo-step">
                     <div class="ds-num">2</div>
                     <div class="ds-title">Upload Both Images</div>
-                    <div class="ds-desc">Before image → left box · After image → right box</div>
+                    <div class="ds-desc">Before image → left box &#xB7; After image → right box</div>
                 </div>
                 <div class="demo-step">
                     <div class="ds-num">3</div>
                     <div class="ds-title">Analyze Damage</div>
-                    <div class="ds-desc">Review the assessment, damage overlay and comparison — then download the report</div>
+                    <div class="ds-desc">Review the assessment, damage overlay and comparison &#x2014; then download the report</div>
                 </div>
             </div>
             <div class="test-cases">
                 <div class="test-case-card" id="testCase1">
-                    <div class="tc-icon">🏠</div>
+                    <div class="tc-icon">&#x1F3E0;</div>
                     <div class="tc-title">Test Case 1</div>
                     <div class="tc-desc">
                         Before box: <code>before1.jpg</code><br>
@@ -522,7 +523,7 @@
                     </div>
                 </div>
                 <div class="test-case-card" id="testCase2">
-                    <div class="tc-icon">🌍</div>
+                    <div class="tc-icon">&#x1F30D;</div>
                     <div class="tc-title">Test Case 2</div>
                     <div class="tc-desc">
                         Before box: <code>before2.jpg</code><br>
@@ -531,20 +532,20 @@
                     </div>
                 </div>
             </div>
-            <p class="demo-note">💡 Click a test case for step-by-step instructions — the full demo takes under a minute.</p>
+            <p class="demo-note">&#x1F4A1; Click a test case for step-by-step instructions &#x2014; the full demo takes under a minute.</p>
         </div>
 
-        <button class="analyze-btn" id="analyzeBtn">🔍 Analyze Damage</button>
+        <button class="analyze-btn" id="analyzeBtn">&#x1F50D; Analyze Damage</button>
         <div id="analysisStatus" class="analysis-status">✓ Analysis Complete</div>
 
         <div id="results" class="results">
-            <h2 id="overallHeading" style="display:none;">📋 Overall Assessment</h2>
+            <h2 id="overallHeading" style="display:none;">&#x1F4CB; Overall Assessment</h2>
             <div id="overallBox" class="assessment-card" style="display:none;"></div>
-            <h2>📊 Class Distribution</h2>
+            <h2>&#x1F4CA; Class Distribution</h2>
             <div id="classStats"></div>
 
             <div id="overlaySection" class="overlay-section" style="display:none;">
-                <h2>🗺️ Damage Overlay</h2>
+                <h2>&#x1F5FA; Damage Overlay</h2>
                 <p class="overlay-desc">Colored areas show where the AI detected different levels of damage.</p>
                 <canvas id="damageCanvas"></canvas>
                 <div class="overlay-slider-wrap">
@@ -561,7 +562,7 @@
             </div>
 
             <div id="comparisonSection" class="comparison-section" style="display:none;">
-                <h2>📸 Before vs After</h2>
+                <h2>&#x1F4F8; Before vs After</h2>
                 <div class="comparison-grid">
                     <div class="comparison-card">
                         <h4>Before Disaster</h4>
@@ -575,16 +576,16 @@
             </div>
         </div>
 
-        <button class="download-btn" id="downloadBtn" type="button">📥 Download Analysis Report</button>
+        <button class="download-btn" id="downloadBtn" type="button">&#x1F4E5; Download Analysis Report</button>
 
         <div class="disclaimer">
-            ⚠️ <strong>AI-Assisted Assessment:</strong> This tool provides AI-assisted visual damage assessment for rapid analysis, demonstration and decision support. Results are based on pixel-level image segmentation and may not reflect real-world conditions. They should not replace professional disaster or structural inspection — always verify findings with qualified experts.
+            &#x26A0;&#xFE0F; <strong>AI-Assisted Assessment:</strong> This tool provides AI-assisted visual damage assessment for rapid analysis, demonstration and decision support. Results are based on pixel-level image segmentation and may not reflect real-world conditions. They should not replace professional disaster or structural inspection &#x2014; always verify findings with qualified experts.
         </div>
 
         <div class="site-footer">
-            <div class="footer-brand">🌊 Disaster Damage AI</div>
+            <div class="footer-brand">&#x1F30A; Disaster Damage AI</div>
             <div class="footer-tagline">AI-assisted disaster damage assessment</div>
-            <div class="footer-event">Alibaba Cloud AI Hackathon — Pakistan 2026</div>
+            <div class="footer-event">Alibaba Cloud AI Hackathon &#x2014; Pakistan 2026</div>
             <div class="footer-disclaimer">Results are AI-generated and intended for demonstration and decision support only. They do not replace professional disaster inspection or structural assessment.</div>
         </div>
     </div>
@@ -642,7 +643,7 @@
             drawOverlay(parseInt(this.value));
         };
 
-        // Centralized error display — resets result widgets so the error state stays clean
+        // Centralized error display &#x2014; resets result widgets so the error state stays clean
         function showError(errorHtml) {
             document.getElementById('results').style.display = 'block';
             document.getElementById('overallHeading').style.display = 'none';
@@ -655,7 +656,7 @@
             document.getElementById('classStats').innerHTML = '<div class="error-box">' + errorHtml + '</div>';
         }
 
-        // Test case buttons — guided demo instructions (no automatic file loading)
+        // Test case buttons &#x2014; guided demo instructions (no automatic file loading)
         function highlightUploadBoxes() {
             document.querySelector('.upload-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
             document.querySelectorAll('.upload-box').forEach(function(box) {
@@ -665,14 +666,14 @@
         }
         document.getElementById('testCase1').onclick = function() {
             highlightUploadBoxes();
-            alert('🏠 Test Case 1 — Demo Steps:\n\n1. "Before Disaster" box (left) → select: test_images/before1.jpg\n2. "After Disaster" box (right) → select: test_images/after1.jpg\n3. Click "Analyze Damage"\n\nThen explore: Overall Assessment → Damage Overlay (try the opacity slider) → Before vs After → Download Analysis Report.');
+            alert('&#x1F3E0; Test Case 1 &#x2014; Demo Steps:\n\n1. "Before Disaster" box (left) → select: test_images/before1.jpg\n2. "After Disaster" box (right) → select: test_images/after1.jpg\n3. Click "Analyze Damage"\n\nThen explore: Overall Assessment → Damage Overlay (try the opacity slider) → Before vs After → Download Analysis Report.');
         };
         document.getElementById('testCase2').onclick = function() {
             highlightUploadBoxes();
-            alert('🌍 Test Case 2 — Demo Steps:\n\n1. "Before Disaster" box (left) → select: test_images/before2.jpg\n2. "After Disaster" box (right) → select: test_images/after2.jpg\n3. Click "Analyze Damage"\n\nThen explore: Overall Assessment → Damage Overlay (try the opacity slider) → Before vs After → Download Analysis Report.');
+            alert('&#x1F30D; Test Case 2 &#x2014; Demo Steps:\n\n1. "Before Disaster" box (left) → select: test_images/before2.jpg\n2. "After Disaster" box (right) → select: test_images/after2.jpg\n3. Click "Analyze Damage"\n\nThen explore: Overall Assessment → Damage Overlay (try the opacity slider) → Before vs After → Download Analysis Report.');
         };
 
-        // Download report handler — builds a self-contained, offline-compatible HTML report
+        // Download report handler &#x2014; builds a self-contained, offline-compatible HTML report
         document.getElementById('downloadBtn').onclick = function() {
             if (!window.lastAnalysisData) return;
             var d = window.lastAnalysisData;
@@ -704,14 +705,14 @@
             var dominantColor = d.dominantColor || '#e94560';
 
             var overlayBlock = d.overlayImage
-                ? '<div class="card"><h2>🗺️ Damage Overlay</h2>' +
+                ? '<div class="card"><h2>&#x1F5FA; Damage Overlay</h2>' +
                   '<img class="overlay-img" src="' + d.overlayImage + '" alt="Damage Overlay">' +
                   '<div class="legend"><span class="dot" style="background:#2ecc71"></span>No Damage&nbsp;&nbsp;<span class="dot" style="background:#f1c40f"></span>Minor&nbsp;&nbsp;<span class="dot" style="background:#e67e22"></span>Moderate&nbsp;&nbsp;<span class="dot" style="background:#e74c3c"></span>Severe&nbsp;&nbsp;<span class="dot" style="background:#8e44ad"></span>Destruction</div></div>'
                 : '';
 
             var reportHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1">' +
-                '<title>Disaster Damage AI — Analysis Report</title><style>' +
+                '<title>Disaster Damage AI &#x2014; Analysis Report</title><style>' +
                 'body{font-family:"Segoe UI",Arial,sans-serif;margin:0;padding:0;background:#f0f2f5;color:#333;line-height:1.6}' +
                 '.page{max-width:860px;margin:0 auto;padding:24px}' +
                 '.report-header{background:#1a1a2e;color:#fff;border-radius:14px;padding:28px;text-align:center}' +
@@ -751,12 +752,12 @@
                 '@media(max-width:600px){.images{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr}}' +
                 '</style></head><body><div class="page">' +
                 '<div class="report-header">' +
-                '<h1>🌊 Disaster <span>Damage</span> AI</h1>' +
+                '<h1>&#x1F30A; Disaster <span>Damage</span> AI</h1>' +
                 '<div class="rh-sub">AI-Assisted Disaster Damage Assessment Report</div>' +
-                '<div class="rh-event">Alibaba Cloud AI Hackathon — Pakistan 2026</div>' +
+                '<div class="rh-event">Alibaba Cloud AI Hackathon &#x2014; Pakistan 2026</div>' +
                 '<div class="rh-time">Report generated: ' + new Date().toLocaleString() + '</div>' +
                 '</div>' +
-                '<div class="card"><h2>📋 Overall Assessment</h2>' +
+                '<div class="card"><h2>&#x1F4CB; Overall Assessment</h2>' +
                 '<div class="level-badge" style="background:' + levelBg + ';color:' + levelFg + ';">' + d.level + '</div>' +
                 '<div class="stats-grid">' +
                 '<div class="stat hl"><div class="sv">' + d.affectedArea.toFixed(1) + '%</div><div class="sl">Total Affected Area</div></div>' +
@@ -769,16 +770,16 @@
                 '<div class="sl">Prediction Quality (softmax confidence)</div>' +
                 '<div class="qbar"><div class="qbar-fill" style="width:' + qScore + '%;background:' + qualityColor + ';"></div></div>' +
                 '</div></div>' +
-                '<div class="card"><h2>📸 Images</h2><div class="images">' +
+                '<div class="card"><h2>&#x1F4F8; Images</h2><div class="images">' +
                 (beforeSrc ? '<div class="img-card"><img src="' + beforeSrc + '" alt="Before Disaster"><div class="img-label">Before Disaster</div></div>' : '') +
                 (afterSrc ? '<div class="img-card"><img src="' + afterSrc + '" alt="After Disaster"><div class="img-label">After Disaster</div></div>' : '') +
                 '</div></div>' +
                 overlayBlock +
-                '<div class="card"><h2>📊 Class Distribution</h2>' +
+                '<div class="card"><h2>&#x1F4CA; Class Distribution</h2>' +
                 '<table><thead><tr><th>Class</th><th>Share</th><th style="text-align:right">Percentage</th><th style="text-align:right">Pixels</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-                '<div class="card"><h2>🧾 Result Explanation</h2><div class="explanation">' + d.explanation + '</div></div>' +
-                '<div class="disclaimer">⚠️ <strong>AI-Assisted Assessment:</strong> This analysis was generated by an AI model using pixel-level image segmentation of the uploaded before/after images. It is intended for demonstration and decision support only and does not replace professional disaster or structural inspection. Results may not reflect real-world conditions — always verify findings with qualified experts.</div>' +
-                '<div class="report-footer">Generated by Disaster Damage AI — Alibaba Cloud AI Hackathon Pakistan 2026<br>AI-assisted disaster damage assessment · For demonstration and decision support only</div>' +
+                '<div class="card"><h2>&#x1F9FE; Result Explanation</h2><div class="explanation">' + d.explanation + '</div></div>' +
+                '<div class="disclaimer">&#x26A0;&#xFE0F; <strong>AI-Assisted Assessment:</strong> This analysis was generated by an AI model using pixel-level image segmentation of the uploaded before/after images. It is intended for demonstration and decision support only and does not replace professional disaster or structural inspection. Results may not reflect real-world conditions &#x2014; always verify findings with qualified experts.</div>' +
+                '<div class="report-footer">Generated by Disaster Damage AI &#x2014; Alibaba Cloud AI Hackathon Pakistan 2026<br>AI-assisted disaster damage assessment &#xB7; For demonstration and decision support only</div>' +
                 '</div></body></html>';
             var blob = new Blob([reportHtml], {type: 'text/html'});
             var url = URL.createObjectURL(blob);
@@ -798,27 +799,27 @@
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
             if (!beforeFile && !afterFile) {
-                showError('<strong>❌ Missing Images</strong><br>Please upload BOTH a before-disaster and an after-disaster image before clicking Analyze.');
+                showError('<strong>&#x274C; Missing Images</strong><br>Please upload BOTH a before-disaster and an after-disaster image before clicking Analyze.');
                 return;
             }
             if (!beforeFile) {
-                showError('<strong>❌ Missing Before Image</strong><br>Please upload a before-disaster image (left upload box).');
+                showError('<strong>&#x274C; Missing Before Image</strong><br>Please upload a before-disaster image (left upload box).');
                 return;
             }
             if (!afterFile) {
-                showError('<strong>❌ Missing After Image</strong><br>Please upload an after-disaster image (right upload box).');
+                showError('<strong>&#x274C; Missing After Image</strong><br>Please upload an after-disaster image (right upload box).');
                 return;
             }
             if (!validTypes.includes(beforeFile.type)) {
-                showError('<strong>❌ Unsupported File Type (Before)</strong><br>The before-disaster image is not a supported format. Please upload a JPG, JPEG, PNG, or WEBP file.');
+                showError('<strong>&#x274C; Unsupported File Type (Before)</strong><br>The before-disaster image is not a supported format. Please upload a JPG, JPEG, PNG, or WEBP file.');
                 return;
             }
             if (!validTypes.includes(afterFile.type)) {
-                showError('<strong>❌ Unsupported File Type (After)</strong><br>The after-disaster image is not a supported format. Please upload a JPG, JPEG, PNG, or WEBP file.');
+                showError('<strong>&#x274C; Unsupported File Type (After)</strong><br>The after-disaster image is not a supported format. Please upload a JPG, JPEG, PNG, or WEBP file.');
                 return;
             }
             if (beforeFile.size === 0 || afterFile.size === 0) {
-                showError('<strong>❌ Empty File</strong><br>One or both uploaded files are empty (0 bytes). Please select valid image files.');
+                showError('<strong>&#x274C; Empty File</strong><br>One or both uploaded files are empty (0 bytes). Please select valid image files.');
                 return;
             }
 
@@ -906,13 +907,13 @@
                 // Determine overall damage level from affected area
                 let level, levelIcon, levelColor, explanation;
                 if (affectedArea < 5) {
-                    level = 'LOW DAMAGE'; levelIcon = '✅'; levelColor = 'damage-low';
+                    level = 'LOW DAMAGE'; levelIcon = '&#x2705;'; levelColor = 'damage-low';
                     explanation = 'The analyzed area is mostly unaffected. ' + unaffectedArea.toFixed(1) + '% of the area shows no damage. Only ' + affectedArea.toFixed(1) + '% shows signs of impact.';
                 } else if (affectedArea < 30) {
-                    level = 'MODERATE DAMAGE'; levelIcon = '⚠️'; levelColor = 'damage-moderate';
+                    level = 'MODERATE DAMAGE'; levelIcon = '&#x26A0;&#xFE0F;'; levelColor = 'damage-moderate';
                     explanation = 'A significant portion of the area is affected (' + affectedArea.toFixed(1) + '%). The most common damage type is ' + classLabels[dominantDamageClass] + '. Assessment and response planning are recommended.';
                 } else {
-                    level = 'SEVERE DAMAGE'; levelIcon = '🚨'; levelColor = 'damage-severe';
+                    level = 'SEVERE DAMAGE'; levelIcon = '&#x1F6A8;'; levelColor = 'damage-severe';
                     explanation = 'Major destruction detected. ' + affectedArea.toFixed(1) + '% of the area is damaged, with ' + classLabels[dominantDamageClass] + ' as the primary damage type. Immediate response is advised.';
                 }
 
@@ -990,23 +991,23 @@
                 var status = error.status || 0;
 
                 if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
-                    errorMsg = '❌ Backend Unavailable';
+                    errorMsg = '&#x274C; Backend Unavailable';
                     errorDetail = 'Cannot connect to the AI backend. Please make sure the server is running:<br><code>python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000</code>';
                 } else if (status === 400 || errorMsg.includes('400')) {
-                    errorMsg = '❌ Invalid Image';
+                    errorMsg = '&#x274C; Invalid Image';
                     errorDetail = apiDetail || 'The uploaded file could not be processed. Please upload a valid JPG, PNG, or WEBP image.';
                 } else if (status >= 500 || errorMsg.includes('500') || errorMsg.includes('Server error')) {
-                    errorMsg = '❌ Server Error';
+                    errorMsg = '&#x274C; Server Error';
                     errorDetail = apiDetail || 'The AI model encountered an error during analysis. Please try different images or restart the backend.';
                 } else {
-                    errorMsg = '❌ Unexpected Error';
+                    errorMsg = '&#x274C; Unexpected Error';
                     errorDetail = apiDetail || errorMsg;
                     errorDetail += '<br><br>If the problem persists, check that the backend is running:<br><code>python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000</code>';
                 }
                 showError('<strong>' + errorMsg + '</strong><br>' + errorDetail);
             } finally {
                 btn.disabled = false;
-                btn.textContent = '🔍 Analyze Damage';
+                btn.textContent = '&#x1F50D; Analyze Damage';
             }
         };
     </script>
